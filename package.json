@@ -1,0 +1,35 @@
+{
+  "name": "fastify-compression",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*",
+    "lint": "./node_modules/eslint/bin/eslint.js index.js lib/*",
+    "coveralls": "npm run test --  --cov",
+    "coverage-report": "npm run coveralls && tap --coverage-report=lcov"
+  },
+  "keywords": [
+    "fastify",
+    "compression"
+  ],
+  "author": "Denis Fäcke",
+  "license": "MIT",
+  "dependencies": {
+    "compressible": "^2.0.12",
+    "fastify-plugin": "^0.1.1"
+  },
+  "engines": {
+    "node": ">= 6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SerayaEryn/fastify-compression.git"
+  },
+  "devDependencies": {
+    "eslint": "^4.10.0",
+    "fastify": "^0.33.0",
+    "request": "^2.83.0",
+    "tap": "^10.7.2"
+  }
+}
