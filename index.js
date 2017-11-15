@@ -3,7 +3,6 @@
 const fastifyPlugin = require('fastify-plugin');
 const compressible = require('compressible');
 const zlib = require('zlib');
-const serialize = require('fastify/lib/validation').serialize;
 
 function compressionPlugin(fastify, opts, next) {
     const threshold = opts.threshold || 1024;
@@ -18,16 +17,13 @@ function compressionPlugin(fastify, opts, next) {
             if(!reply.res.getHeader('Content-Type') || reply.res.getHeader('Content-Type') === 'application/json') {
                 reply.res.setHeader('Content-Type', 'application/json')
 
-                function _serialize(payload) {
-                    const _payload = serialize(reply.context, payload, reply.res.statusCode)
-                    if(_payload.length >= threshold) {
-                        setVaryHeader(reply);
-                        reply.header('Content-Encoding', method);
-                        return zlib.gzipSync(_payload);
-                    }
-                    return _payload
+                let _payload = reply.serialize(payload)
+                if(_payload.length >= threshold) {
+                    setVaryHeader(reply);
+                    reply.header('Content-Encoding', method);
+                    _payload = zlib.gzipSync(_payload);
                 }
-                reply.serializer(_serialize);
+                reply.serializer(getSerializer(_payload));
             } else if(payload.length >= threshold) {
                 setVaryHeader(reply);
                 reply.header('Content-Encoding', method);
@@ -38,6 +34,12 @@ function compressionPlugin(fastify, opts, next) {
     }
 
     next();
+}
+
+function getSerializer(_payload) {
+    return function _serialize(payload) {
+        return _payload
+    };
 }
 
 function getMethod(acceptEncoding) {
@@ -78,4 +80,4 @@ function isCompressible(reply) {
     return contentType ? compressible(contentType) : true;
 }
 
-exports = module.exports = fastifyPlugin(compressionPlugin, '>=0.33.0');
+exports = module.exports = fastifyPlugin(compressionPlugin, '>=0.34.0');
