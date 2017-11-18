@@ -1,7 +1,7 @@
 {
   "name": "fastify-compression",
   "version": "0.1.0",
-  "description": "",
+  "description": "A compression plugin for fastify",
   "main": "index.js",
   "scripts": {
     "unit": "tap test/*",
@@ -12,13 +12,17 @@
   },
   "keywords": [
     "fastify",
-    "compression"
+    "compression",
+    "gzip",
+    "deflate"
   ],
   "author": "Denis Fäcke",
   "license": "MIT",
   "dependencies": {
     "compressible": "^2.0.12",
-    "fastify-plugin": "^0.1.1"
+    "fastify-plugin": "^0.1.1",
+    "pump": "^1.0.3",
+    "string-to-stream": "^1.1.0"
   },
   "engines": {
     "node": ">= 6.0.0"

@@ -3,6 +3,8 @@
 const fastifyPlugin = require('fastify-plugin');
 const compressible = require('compressible');
 const zlib = require('zlib');
+const stringToStream = require('string-to-stream')
+const pump = require('pump');
 
 function compressionPlugin(fastify, opts, next) {
     const threshold = opts.threshold || 1024;
@@ -12,23 +14,25 @@ function compressionPlugin(fastify, opts, next) {
     function compression(request, reply, payload, done) {
         const acceptEncoding = request.req.headers['accept-encoding'];
         const method = getMethod(acceptEncoding);
-        
-        if (shouldCompress(reply, method)) {
-            if(!reply.res.getHeader('Content-Type') || reply.res.getHeader('Content-Type') === 'application/json') {
-                reply.res.setHeader('Content-Type', 'application/json')
 
-                let _payload = reply.serialize(payload)
-                if(_payload.length >= threshold) {
-                    setVaryHeader(reply);
-                    reply.header('Content-Encoding', method);
-                    _payload = zlib.gzipSync(_payload);
-                }
-                reply.serializer(getSerializer(_payload));
-            } else if(payload.length >= threshold) {
-                setVaryHeader(reply);
-                reply.header('Content-Encoding', method);
-                reply.serializer(zlib.gzipSync);
+        if (shouldCompress(reply, method)) {
+            let payloadStream;
+            let _payload = payload;
+            if (!reply.res.getHeader('Content-Type') || reply.res.getHeader('Content-Type') === 'application/json') {
+                reply.res.setHeader('Content-Type', 'application/json');
+                _payload = reply.serialize(payload);
             }
+            if (Buffer.byteLength(_payload) < threshold) {
+                done();
+                return;
+            }
+            payloadStream = stringToStream(_payload);
+            setVaryHeader(reply);
+            reply.header('Content-Encoding', method);
+            const compressionStream = method === 'gzip' ? zlib.createGzip() : zlib.createDeflate();
+
+            done(null, pump(payloadStream, compressionStream, onEnd.bind(request)));
+            return;
         } 
         done();
     }
@@ -36,10 +40,8 @@ function compressionPlugin(fastify, opts, next) {
     next();
 }
 
-function getSerializer(_payload) {
-    return function _serialize(payload) {
-        return _payload
-    };
+function onEnd(err) {
+    if(err) this.log.error(err);
 }
 
 function getMethod(acceptEncoding) {
@@ -80,4 +82,4 @@ function isCompressible(reply) {
     return contentType ? compressible(contentType) : true;
 }
 
-exports = module.exports = fastifyPlugin(compressionPlugin, '>=0.34.0');
+exports = module.exports = fastifyPlugin(compressionPlugin, '>=0.35.0');

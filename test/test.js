@@ -5,6 +5,8 @@ const test = t.test;
 const Fastify = require('fastify');
 const request = require('request');
 const fastifyCompression = require('..');
+const zlib = require('zlib');
+const stringToStream = require('string-to-stream');
 
 test('register should work', t => {
     t.plan(1);
@@ -72,7 +74,7 @@ test('should not compress if invalid content-type', t => {
 });
 
 test('should set default value for threshold', t => {
-    t.plan(5);
+    t.plan(6);
 
     const fastify = Fastify();
     
@@ -84,6 +86,7 @@ test('should set default value for threshold', t => {
         aLongString += 'ateststring1234567890'
     }
     fastify.get('/', (request, reply) => {
+        reply.header('Content-Type', 'text/plain')
         reply.send(aLongString);
     })
     fastify.listen(0, err => {
@@ -92,18 +95,22 @@ test('should set default value for threshold', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
-            t.strictEqual(response.headers['content-length'], '57')
             t.strictEqual(response.statusCode, 200);
-            t.strictEqual(response.headers['content-encoding'], 'gzip')
+            t.strictEqual(response.headers['content-encoding'], 'gzip');
+            t.notOk(response.headers['content-length']);
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), aLongString);
         })
     });
 });
 
 test('should compress if larger than threshold', t => {
-    t.plan(5);
+    t.plan(6);
 
     const fastify = Fastify();
     
@@ -120,18 +127,22 @@ test('should compress if larger than threshold', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
+            t.notOk(response.headers['content-length']);
             t.strictEqual(response.statusCode, 200);
-            t.strictEqual(response.headers['content-encoding'], 'gzip')
-            t.strictEqual('"something larger than threshold"', body.toString())
+            t.strictEqual(response.headers['content-encoding'], 'gzip');
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), '"something larger than threshold"');
         })
     });
 });
 
 test('should compress if larger than threshold', t => {
-    t.plan(5);
+    t.plan(6);
 
     const fastify = Fastify();
     
@@ -148,12 +159,16 @@ test('should compress if larger than threshold', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
+            t.notOk(response.headers['content-length']);
             t.strictEqual(response.statusCode, 200);
-            t.strictEqual(response.headers['content-encoding'], 'gzip')
-            t.strictEqual(body.toString(), '{"hallo":"welt"}')
+            t.strictEqual(response.headers['content-encoding'], 'gzip');
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), '{"hallo":"welt"}');
         })
     });
 });
@@ -178,7 +193,8 @@ test('should use gzip', t => {
             uri: 'http://localhost:' + fastify.server.address().port,
             headers: {
                 'accept-encoding': 'gzip;q=1.0, deflate;q=0.5'
-            }
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
@@ -188,7 +204,7 @@ test('should use gzip', t => {
 });
 
 test('should remove content length header', t => {
-    t.plan(5);
+    t.plan(6);
 
     const fastify = Fastify();
     
@@ -207,12 +223,14 @@ test('should remove content length header', t => {
             uri: 'http://localhost:' + fastify.server.address().port,
             headers: {
                 'accept-encoding': 'gzip;q=1.0, deflate;q=0.5'
-            }
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
             t.strictEqual(response.headers['content-encoding'], 'gzip')
-            t.strictEqual(response.headers['content-length'], '51');
+            t.notOk(response.headers['content-length']);
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), '"something larger than threshold"');
         })
     });
 });
@@ -237,7 +255,8 @@ test('should use deflate', t => {
             uri: 'http://localhost:' + fastify.server.address().port,
             headers: {
                 'accept-encoding': 'deflate;q=1.0, gzip;q=0.5'
-            }
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
@@ -264,7 +283,10 @@ test('should set vary header', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
@@ -292,7 +314,10 @@ test('should append vary header', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
@@ -320,7 +345,10 @@ test('should append vary header', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
@@ -374,12 +402,15 @@ test('should use gzip and consider plain/text', t => {
         request({
             method: 'GET',
             uri: 'http://localhost:' + fastify.server.address().port,
-            gzip: true
+            headers: {
+                'accept-encoding': 'gzip'
+            },
+            encoding: null
         }, (err, response, body) => {
             t.error(err);
             t.strictEqual(response.statusCode, 200);
-            t.strictEqual(body.toString(), "something larger than threshold");
             t.strictEqual(response.headers['content-encoding'], 'gzip')
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), "something larger than threshold");
         })
     });
 });

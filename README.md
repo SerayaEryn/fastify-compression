@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/SerayaEryn/fastify-compression/badge.svg?branch=master)](https://coveralls.io/github/SerayaEryn/fastify-compression?branch=master)
 [![NPM version](https://img.shields.io/npm/v/fastify-compression.svg?style=flat)](https://www.npmjs.com/package/fastify-compression)
 
-A compression plugin for [fastify](http://fastify.io/). 
+A compression plugin for [Fastify](http://fastify.io/). Supports `gzip` and `deflate`.
 
 ## Usage
 
