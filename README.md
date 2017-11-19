@@ -19,7 +19,7 @@ app.register(fastifyCompression, {threshold: 2048});
 
 ## API
 ### compression(fastify, options, next)
-Compresses the payload with `gzip` or `deflate` if the payload length is above the threshold and a `Accept-Encoding` header is send with the request.
+Compresses the payload with `gzip` or `deflate` if the payload length is above the threshold and a `Accept-Encoding` header is send with the request. In case of an asterisk `*` in the `Accept-Encoding` header `gzip` will be chosen.
 ### options
 #### threshold (optional)
 A `number` that specifies the threshold used to determine if compression should be applied. Defaults to `1024`.

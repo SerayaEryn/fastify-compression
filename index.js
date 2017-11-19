@@ -50,7 +50,7 @@ function getMethod(acceptEncoding) {
         const [ encoding, ] = encodingAndQuality.split(';');
         if (encoding === 'deflate') {
             return 'deflate';
-        } else if (encoding === 'gzip') {
+        } else if (encoding === 'gzip' || encoding === '*') {
             return 'gzip';
         }
     }
