@@ -30,8 +30,9 @@ function compressionPlugin(fastify, opts, next) {
             setVaryHeader(reply);
             reply.header('Content-Encoding', method);
             const compressionStream = method === 'gzip' ? zlib.createGzip() : zlib.createDeflate();
-
-            done(null, pump(payloadStream, compressionStream, onEnd.bind(request)));
+            
+            pump(payloadStream, compressionStream, onEnd.bind(request))
+            done(null, compressionStream);
             return;
         } 
         done();
