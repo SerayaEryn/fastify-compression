@@ -4,16 +4,18 @@ const fastifyPlugin = require('fastify-plugin');
 const compressible = require('compressible');
 const zlib = require('zlib');
 const stringToStream = require('string-to-stream')
+const encodingNegotiator = require('encoding-negotiator');
 const pump = require('pump');
 
 function compressionPlugin(fastify, opts, next) {
     const threshold = opts.threshold || 1024;
+    const supportedEncodings = ['gzip', 'deflate'];
 
     fastify.addHook('onSend', compression)
     
     function compression(request, reply, payload, done) {
         const acceptEncoding = request.req.headers['accept-encoding'];
-        const method = getMethod(acceptEncoding);
+        const method = encodingNegotiator.negotiate(acceptEncoding, supportedEncodings);
 
         if (shouldCompress(reply, method)) {
             let payloadStream;
@@ -43,20 +45,6 @@ function compressionPlugin(fastify, opts, next) {
 
 function onEnd(err) {
     if(err) this.log.error(err);
-}
-
-function getMethod(acceptEncoding) {
-    const encodings = (acceptEncoding || '').split(', ');
-    for (const encodingAndQuality of encodings) {
-        const [ encoding, ] = encodingAndQuality.split(';');
-        if (encoding === 'deflate') {
-            return 'deflate';
-        } else if (encoding === 'gzip' || encoding === '*') {
-            return 'gzip';
-        }
-    }
-
-    return 'identity';
 }
 
 function setVaryHeader(reply) {
