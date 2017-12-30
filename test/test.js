@@ -13,7 +13,8 @@ test('register should work', t => {
     const fastify = Fastify();
 
     const options = {}
-    fastify.register(fastifyCompression, options, (err) => {
+    fastify.register(fastifyCompression, options);
+    fastify.ready((err) => {
         t.error(err);
     });
 });
