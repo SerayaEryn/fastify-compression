@@ -71,4 +71,9 @@ function isCompressible(reply) {
     return contentType ? compressible(contentType) : true;
 }
 
-exports = module.exports = fastifyPlugin(compressionPlugin, '>=0.35.0');
+const metadata = {
+    fastify: '>=0.36.0',
+    name: 'fastify-compression'
+}
+
+exports = module.exports = fastifyPlugin(compressionPlugin, metadata);
