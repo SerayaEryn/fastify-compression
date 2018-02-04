@@ -137,7 +137,7 @@ test('should compress if larger than threshold', t => {
             t.notOk(response.headers['content-length']);
             t.strictEqual(response.statusCode, 200);
             t.strictEqual(response.headers['content-encoding'], 'gzip');
-            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), '"something larger than threshold"');
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), 'something larger than threshold');
         })
     });
 });
@@ -169,7 +169,7 @@ test('support * accept-encoding', t => {
             t.notOk(response.headers['content-length']);
             t.strictEqual(response.statusCode, 200);
             t.strictEqual(response.headers['content-encoding'], 'gzip');
-            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), '"something larger than threshold"');
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), 'something larger than threshold');
         })
     });
 });
@@ -263,7 +263,7 @@ test('should remove content length header', t => {
             t.strictEqual(response.statusCode, 200);
             t.strictEqual(response.headers['content-encoding'], 'gzip')
             t.notOk(response.headers['content-length']);
-            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), '"something larger than threshold"');
+            t.strictEqual(zlib.gunzipSync(body).toString('utf-8'), 'something larger than threshold');
         })
     });
 });

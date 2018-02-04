@@ -19,16 +19,11 @@ function compressionPlugin(fastify, opts, next) {
 
         if (shouldCompress(reply, method)) {
             let payloadStream;
-            let _payload = payload;
-            if (!reply.res.getHeader('Content-Type') || reply.res.getHeader('Content-Type') === 'application/json') {
-                reply.res.setHeader('Content-Type', 'application/json');
-                _payload = reply.serialize(payload);
-            }
-            if (Buffer.byteLength(_payload) < threshold) {
+            if (Buffer.byteLength(payload) < threshold) {
                 done();
                 return;
             }
-            payloadStream = stringToStream(_payload);
+            payloadStream = stringToStream(payload);
             setVaryHeader(reply);
             reply.header('Content-Encoding', method);
             const compressionStream = method === 'gzip' ? zlib.createGzip() : zlib.createDeflate();
@@ -72,7 +67,7 @@ function isCompressible(reply) {
 }
 
 const metadata = {
-    fastify: '>=0.36.0',
+    fastify: '>=0.43.0',
     name: 'fastify-compression'
 }
 
