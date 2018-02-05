@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "eslint": "^4.10.0",
-    "fastify": "^0.43.0",
+    "fastify": "^1.0.0-rc.1",
     "request": "^2.83.0",
     "tap": "^11.0.0"
   }
