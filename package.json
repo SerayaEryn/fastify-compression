@@ -21,7 +21,7 @@
   "dependencies": {
     "compressible": "^2.0.12",
     "encoding-negotiator": "^1.0.2",
-    "fastify-plugin": "^0.2.1",
+    "fastify-plugin": "^0.2.2",
     "pump": "^3.0.0",
     "string-to-stream": "^1.1.0"
   },
@@ -33,8 +33,8 @@
     "url": "git+https://github.com/SerayaEryn/fastify-compression.git"
   },
   "devDependencies": {
-    "eslint": "^4.10.0",
-    "fastify": "^0.43.0",
+    "eslint": "^4.18.0",
+    "fastify": "^1.0.0-rc.2",
     "request": "^2.83.0",
     "tap": "^11.0.0"
   }
