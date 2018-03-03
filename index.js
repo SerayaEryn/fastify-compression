@@ -43,7 +43,7 @@ function onEnd(err) {
 }
 
 function setVaryHeader(reply) {
-    const varyHeader = reply.res.getHeader('Vary');
+    const varyHeader = reply._headers['vary'];
     reply.header('Vary', getVaryHeaderValue(varyHeader));
 }
 
@@ -62,12 +62,12 @@ function shouldCompress(reply, method) {
 }
 
 function isCompressible(reply) {
-    const contentType = reply.res.getHeader('Content-Type');
+    const contentType = reply._headers['content-type'];
     return contentType ? compressible(contentType) : true;
 }
 
 const metadata = {
-    fastify: '>=0.43.0',
+    fastify: '>=1.0.0-rc.3',
     name: 'fastify-compression'
 }
 
