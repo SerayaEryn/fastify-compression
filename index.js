@@ -10,6 +10,15 @@ const pump = require('pump');
 function compressionPlugin(fastify, opts, next) {
     const threshold = opts.threshold || 1024;
     const supportedEncodings = ['gzip', 'deflate'];
+    const compressionStreams = {
+        gzip: zlib.createGzip,
+        deflate: zlib.createDeflate
+    }
+
+    if (opts.brotli) {
+        compressionStreams.br = opts.brotli.compressStream;
+        supportedEncodings.push('br');
+    }
 
     fastify.addHook('onSend', compression)
     
@@ -18,15 +27,14 @@ function compressionPlugin(fastify, opts, next) {
         const method = encodingNegotiator.negotiate(acceptEncoding, supportedEncodings);
 
         if (shouldCompress(reply, method)) {
-            let payloadStream;
             if (Buffer.byteLength(payload) < threshold) {
                 done();
                 return;
             }
-            payloadStream = stringToStream(payload);
+            let payloadStream = stringToStream(payload);
             setVaryHeader(reply);
             reply.header('Content-Encoding', method);
-            const compressionStream = method === 'gzip' ? zlib.createGzip() : zlib.createDeflate();
+            const compressionStream = compressionStreams[method]();
             
             pump(payloadStream, compressionStream, onEnd.bind(request))
             done(null, compressionStream);
