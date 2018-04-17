@@ -19,7 +19,7 @@
   "author": "Denis Fäcke",
   "license": "MIT",
   "dependencies": {
-    "compressible": "^2.0.12",
+    "compressible": "^2.0.13",
     "encoding-negotiator": "^1.0.2",
     "fastify-plugin": "^1.0.0",
     "pump": "^3.0.0",
