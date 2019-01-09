@@ -2,7 +2,7 @@
   "name": "fastify-compression",
   "version": "1.1.0",
   "description": "A compression plugin for fastify",
-  "main": "index.js",
+  "main": "lib/Compression.js",
   "scripts": {
     "unit": "tap test/*.test.js",
     "test": "npm run lint && npm run unit",
@@ -26,6 +26,7 @@
     "encoding-negotiator": "^1.0.2",
     "fastify-plugin": "^1.0.0",
     "pump": "^3.0.0",
+    "semver": "^5.6.0",
     "string-to-stream": "^1.1.0"
   },
   "engines": {
@@ -36,8 +37,9 @@
     "url": "git+https://github.com/SerayaEryn/fastify-compression.git"
   },
   "devDependencies": {
-    "fastify": "^2.0.0-rc.3",
+    "fastify": "^1.13.3",
     "iltorb": "^2.0.3",
+    "proxyquire": "^2.1.0",
     "request": "^2.85.0",
     "standard": "^12.0.1",
     "tap": "^12.0.0"
