@@ -14,7 +14,10 @@
     "fastify",
     "compression",
     "gzip",
-    "deflate"
+    "deflate",
+    "brotli",
+    "compress",
+    "plugin"
   ],
   "author": "Denis Fäcke",
   "license": "MIT",
@@ -33,7 +36,7 @@
     "url": "git+https://github.com/SerayaEryn/fastify-compression.git"
   },
   "devDependencies": {
-    "fastify": "^1.2.1",
+    "fastify": "^2.0.0-rc.3",
     "iltorb": "^2.0.3",
     "request": "^2.85.0",
     "standard": "^12.0.1",
