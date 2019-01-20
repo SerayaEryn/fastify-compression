@@ -42,6 +42,25 @@ test('shold work with fastify >=1.1.0', t => {
   t.equals(getHeader(reply, 'test'), 'getHeader')
 })
 
+test('shold work with fastify 2.0.0-rc.1', t => {
+  t.plan(1)
+  const { getHeaderFunction } = proxyquire('./../lib/Header', {
+    'fastify/package.json': {
+      version: '2.0.0-rc.1'
+    }
+  })
+  
+  const reply = {
+    getHeader() {
+      return 'getHeader'
+    }
+  }
+
+  const getHeader = getHeaderFunction()
+
+  t.equals(getHeader(reply, 'test'), 'getHeader')
+})
+
 test('shold handle missing fastify', t => {
   t.plan(1)
   const { getHeaderFunction } = proxyquire('./../lib/Header', {
