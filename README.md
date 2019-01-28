@@ -25,7 +25,8 @@ Compresses the payload with `gzip`, `brotli` or `deflate` if the payload length 
 #### threshold (optional)
 A `number` that specifies the threshold used to determine if compression should be applied. Defaults to `1024`.
 #### brotli
-To enable Brotli compression pass the [iltorb](https://www.npmjs.com/package/iltorb) module with the `brotli` option.
+To enable Brotli compression pass the [iltorb](https://www.npmjs.com/package/iltorb) module with the `brotli` option.<br>
+**Note:**  Since version `11.7.0` brotli is being supported by Node.js itself. Therefore the `brotli` option is no longer necessary.
 
 ## License
 
