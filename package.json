@@ -37,7 +37,7 @@
     "url": "git+https://github.com/SerayaEryn/fastify-compression.git"
   },
   "devDependencies": {
-    "fastify": "^1.13.3",
+    "fastify": "^2.0.0",
     "iltorb": "^2.0.3",
     "proxyquire": "^2.1.0",
     "request": "^2.85.0",
