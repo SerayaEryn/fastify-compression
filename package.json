@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "compressible": "^2.0.13",
-    "encoding-negotiator": "^1.0.2",
+    "encoding-negotiator": "^2.0.0",
     "fastify-plugin": "^1.0.0",
     "pump": "^3.0.0",
     "semver": "^6.0.0",
