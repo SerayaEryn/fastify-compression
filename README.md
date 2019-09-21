@@ -1,10 +1,6 @@
 # fastify-compression
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/SerayaEryn/fastify-compression.svg)](https://greenkeeper.io/)
-[![Build Status](https://travis-ci.org/SerayaEryn/fastify-compression.svg?branch=master)](https://travis-ci.org/SerayaEryn/fastify-compression)
-[![Coverage Status](https://coveralls.io/repos/github/SerayaEryn/fastify-compression/badge.svg?branch=master)](https://coveralls.io/github/SerayaEryn/fastify-compression?branch=master)
-[![NPM version](https://img.shields.io/npm/v/fastify-compression.svg?style=flat)](https://www.npmjs.com/package/fastify-compression)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+> DEPRECATED Please use [fastify-compress](https://github.com/fastify/fastify-compress) instead.
 
 A compression plugin for [Fastify](http://fastify.io/). Supports `gzip`, `deflate` and `brotli`.
 
